@@ -398,12 +398,15 @@ function drawXpTable(xpData) {
     // Date: Format the created_at date
     const tdDate = document.createElement("td");
     const d = parseDateSafe(tx.created_at);
-tdDate.textContent = isNaN(d)
-  ? "Invalid date"
-  : d.toLocaleString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
+    tdDate.textContent = isNaN(d)
+      ? "Invalid date"
+      : d.toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
     tr.appendChild(tdDate);
     console.log("Raw date:", tx.created_at);
 
@@ -422,18 +425,16 @@ tdDate.textContent = isNaN(d)
 
 // Parse date string like "2023-08-10 13:57:32.123456" to ISO format
 function parseDateSafe(str) {
-  if (typeof str !== 'string') return new Date(NaN);
+  if (typeof str !== "string") return new Date(NaN);
 
-  // Match parts: date, time, microseconds, and timezone
-  const match = str.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})(?:\.(\d+))?(?:([+-]\d{2}):?(\d{2})?)?$/);
-  if (!match) return new Date(NaN);
+  const [date, time] = str.split(" ");
+  if (!date || !time) return new Date(NaN);
 
-  const [_, date, time, micros = "000", tzHour = "+00", tzMin = "00"] = match;
-  const ms = micros.slice(0, 3).padEnd(3, "0");  // trim/pad to milliseconds
-  const iso = `${date}T${time}.${ms}${tzHour}:${tzMin}`;
-  return new Date(iso);
+  const cleanTime = time.includes(".")
+    ? time.split(".")[0] + "." + time.split(".")[1].slice(0, 3)
+    : time;
+  return new Date(`${date}T${cleanTime}Z`);
 }
-
 
 function addRect(x, y, w, h, color, svg) {
   const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
