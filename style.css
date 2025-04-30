@@ -1,0 +1,194 @@
+.data-container {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.data-container h2 {
+    margin-top: 0;
+}
+
+.data-container ul {
+    padding-left: 20px;
+}
+
+.data-container li {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.btn {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+#graphContainer {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    padding: 10px 0;
+}
+
+#graphContainer svg {
+    display: block;
+}
+
+.timeline-tooltip {
+    position: absolute;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    pointer-events: none;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 100;
+    max-width: 200px;
+}
+
+.project text {
+    font-family: Arial, sans-serif;
+    pointer-events: none;
+}
+
+.timeline-tooltip br {
+    margin: 4px 0;
+    display: block;
+    content: " ";
+}
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+.login-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-container h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+#profileSection {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: #2c3e50;
+    color: white;
+}
+
+#logoutBtn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#xp-graph {
+    margin: 20px auto;
+    padding: 10px;
+    display: block;
+    background-color: #1a1a1a;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+#ratioContainer {
+    margin: 30px auto;
+    width: 900px;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#ratio-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: monospace;
+}
+
+#ratio-table th, #ratio-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+#auditSvg {
+    display: block;
+    margin: 1rem auto;
+    width: 1000px;   
+    height: 200px;  
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+#auditSvg rect {
+    rx: 4;            
+    ry: 4;
+    transition: opacity 0.2s;
+}
+
+#auditSvg text {
+    font-family: Arial, sans-serif;
+}
+
+.xp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+}
+
+.xp-table th,
+.xp-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.xp-table th {
+    background-color: #f0f0f0;
+    text-align: left;
+}
+
+.xp-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+.xp-table td {
+    font-size: 0.95rem;
+}
