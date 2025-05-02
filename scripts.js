@@ -368,7 +368,7 @@ function drawXpTable(xpData) {
     return;
   }
 
-  xpData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  xpData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const table = document.createElement("table");
   table.classList.add("xp-table");
@@ -397,7 +397,7 @@ function drawXpTable(xpData) {
 
     // Date: Format the created_at date
     const tdDate = document.createElement("td");
-    const d = parseDateSafe(tx.created_at);
+    const d = new Date(tx.createdAt);
     tdDate.textContent = isNaN(d)
       ? "Invalid date"
       : d.toLocaleString("en-US", {
@@ -408,32 +408,15 @@ function drawXpTable(xpData) {
           minute: "2-digit",
         });
     tr.appendChild(tdDate);
-    console.log("Raw date:", tx.created_at);
-
-    // XP amount: Show XP in kilobytes (you can adjust the formatting as needed)
+    console.log("Raw date:", tx.createdAt);
     const tdXp = document.createElement("td");
     tdXp.style.textAlign = "right";
     tdXp.textContent = (tx.amount / 1000).toFixed(2);
     tr.appendChild(tdXp);
-
     tbody.appendChild(tr);
   });
-
   table.appendChild(tbody);
   container.appendChild(table);
-}
-
-// Parse date string like "2023-08-10 13:57:32.123456" to ISO format
-function parseDateSafe(str) {
-  if (typeof str !== "string") return new Date(NaN);
-
-  const [date, time] = str.split(" ");
-  if (!date || !time) return new Date(NaN);
-
-  const cleanTime = time.includes(".")
-    ? time.split(".")[0] + "." + time.split(".")[1].slice(0, 3)
-    : time;
-  return new Date(`${date}T${cleanTime}Z`);
 }
 
 function addRect(x, y, w, h, color, svg) {
@@ -725,17 +708,15 @@ function drawTimeline(completed, wip) {
       .attr("stroke-width", 2)
       .on("mouseover", function (event, d) {
         d3.select(this).attr("r", 10);
-        tooltip.style(
-          "opacity",
-          1
-        ).html(`<strong>${getProjectName(d.path)}</strong><br>
-                              ${d3.timeFormat("%B %d, %Y")(d.date)}<br>
-                              Status: ${
-                                d.status === "completed"
-                                  ? "✅ Completed"
-                                  : "🔄 In Progress"
-                              }`);
+        tooltip
+          .style("opacity", 1)
+          .style("left", event.pageX + "px") // add this line
+          .style("top", event.pageY - 28 + "px") // and this
+          .html(`<strong>${getProjectName(d.path)}</strong><br>
+                  ${d3.timeFormat("%B %d, %Y")(d.date)}<br>
+                  Status: ${d.status === "completed" ? "✅ Completed" : "🔄 In Progress"}`);
       })
+      
       .on("mouseout", function () {
         d3.select(this).attr("r", 8);
         tooltip.style("opacity", 0);
@@ -743,21 +724,21 @@ function drawTimeline(completed, wip) {
 
     // Add project names (always visible)
     markers
-      .append("text")
-      .attr("y", 25) // Position below circle
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .attr("fill", "#333")
-      .text((d) => getProjectName(d.path));
-
-    // Add status indicators (always visible)
+    .append("text")
+    .attr("y", (_, i) => (i % 2 === 0 ? -40 : 30))  // Even index: top, Odd: bottom
+    .attr("text-anchor", "middle")
+    .attr("font-size", "12px")
+    .attr("fill", "#333")
+    .text((d) => getProjectName(d.path));
+    
     markers
-      .append("text")
-      .attr("y", 45) // Position below project name
-      .attr("text-anchor", "middle")
-      .attr("font-size", "11px")
-      .attr("fill", (d) => (d.status === "completed" ? "#4CAF50" : "#FF9800"))
-      .text((d) => (d.status === "completed" ? "Completed" : "In Progress"));
+    .append("text")
+    .attr("y", (_, i) => (i % 2 === 0 ? -25 : 45))  // Adjust accordingly
+    .attr("text-anchor", "middle")
+    .attr("font-size", "11px")
+    .attr("fill", (d) => (d.status === "completed" ? "#4CAF50" : "#FF9800"))
+    .text((d) => (d.status === "completed" ? "Completed" : "In Progress"));
+
 
     // Create tooltip
     const tooltip = d3
@@ -953,18 +934,15 @@ function capitalizeFirstLetter(str) {
 
 function insertData(elementId, value) {
   let element = document.getElementById(elementId);
-
   if (!element) {
     console.warn(`Creating element ${elementId} dynamically`);
     element = document.createElement("span");
     element.id = elementId;
     document.body.appendChild(element);
   }
-
   element.textContent = value;
 }
 
-// Utility functions
 function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -973,5 +951,4 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// Initialize app
 loadInitialState();
