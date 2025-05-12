@@ -1,4 +1,4 @@
-const signinUrl = `https://01.gritlab.ax/api/auth/signin`;
+const signinUrl = `https://${DOMAIN}/api/auth/signin`;
 const DOMAIN = "01.gritlab.ax";
 const GRAPHQL_ENDPOINT = `https://${DOMAIN}/api/graphql-engine/v1/graphql`;
 
