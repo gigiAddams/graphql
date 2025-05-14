@@ -122,7 +122,7 @@ if (isLoginPage) {
       if (!token) throw new Error("No token received");
 
       sessionStorage.setItem("jwt", token);
-
+      
       // Verify token can be parsed
       try {
         parseJwt(token);
@@ -136,27 +136,13 @@ if (isLoginPage) {
     }
   });
 } else {
-  const errorMsg = document.getElementById("error") || { textContent: "" };
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginSection = document.getElementById("loginSection");
-  const profileSection = document.getElementById("profileSection");
-
-  let userData = null;
-  let transactionsData = null;
-  let projectsData = null;
-  let skillsData = null;
 
   // Check authentication on profile page load
   if (!sessionStorage.getItem("jwt")) {
     window.location.href = "login.html";
   } else {
-    loadInitialState();
+    renderProfile();
   }
-}
-
-// Utility Functions
-function showLogoutButton(show) {
-  if (logoutBtn) logoutBtn.style.display = show ? "inline-block" : "none";
 }
 
 // Logout functionality
@@ -192,8 +178,6 @@ function parseJwt(token) {
 // Logout Functionality
 logoutBtn.addEventListener("click", () => {
   sessionStorage.removeItem("jwt");
-  showLogoutButton(false);
-  clearData();
 });
 
 function getRange(data, key) {
@@ -250,17 +234,6 @@ function addPath(d, color, svg) {
 function formatDate(date) {
   const options = { day: "2-digit", month: "short", year: "numeric" };
   return date.toLocaleDateString("en-US", options);
-}
-
-function addXpEntry(item) {
-  const log = document.getElementById("xp-log");
-  if (!log) return;
-
-  const entry = document.createElement("p");
-  entry.textContent = `${item.path || "XP"}: ${item.amount} at ${new Date(
-    item.createdAt
-  ).toLocaleString()}`;
-  log.appendChild(entry);
 }
 
 function drawXPOverTimeGraph(xpData) {
@@ -340,15 +313,11 @@ function drawXPOverTimeGraph(xpData) {
     const { x, y } = getXY(item.createdAt, item.cumulativeXP);
     pathData.push(`${x} ${y}`);
     addCircle(x, y, "2", "#228B22", XP_SVG);
-    addXpEntry(item); // Add individual XP entries to the table
   });
 
   // Create the line path for the XP data points
   const pathStr = `M ${pathData.join(" L ")}`;
   addPath(pathStr, "#228B22", XP_SVG);
-
-  // Add the total cumulative XP entry
-  addXpEntry({ amount: cumulativeXP, path: "TOTAL", createdAt: new Date() });
 }
 
 function drawXpTable(xpData) {
@@ -445,7 +414,7 @@ function drawAuditRatioGraph(audits) {
 
   const width = svg.clientWidth || 600;
   const height = svg.clientHeight || 200;
-  const margin = { top: 40, right: 20, bottom: 20, left: 60 };
+  const margin = { top: 40, right: 100, bottom: 20, left: 60 };
   const chartW = width - margin.left - margin.right;
   const barH = 30;
   const spacing = 20;
@@ -473,7 +442,7 @@ function drawAuditRatioGraph(audits) {
   addText(margin.left + 5, y2 + barH - 5, "#ffffff", "20px", totalDown, svg);
 
   const ratio = (totalUp / totalDown).toFixed(3);
-  const ratioX = width - margin.right;
+  const ratioX = width - 20;
   const ratioY = margin.top + barH / 2 + 5;
   const ratioLabel = document.createElementNS(svg.namespaceURI, "text");
   ratioLabel.setAttribute("x", ratioX);
@@ -484,31 +453,6 @@ function drawAuditRatioGraph(audits) {
   ratioLabel.setAttribute("text-anchor", "end");
   ratioLabel.textContent = ratio;
   svg.appendChild(ratioLabel);
-}
-
-function clearData() {
-  userData = null;
-  transactionsData = null;
-  projectsData = null;
-  skillsData = null;
-
-  document.getElementById("basicInfo").innerHTML = "";
-  document.getElementById("xpInfo").innerHTML = "";
-  document.getElementById("auditInfo").innerHTML = "";
-  document.getElementById("skillsInfo").innerHTML = "";
-
-  const svg = document.getElementById("graphSvg");
-  svg.innerHTML = "";
-}
-
-function loadInitialState() {
-  const token = sessionStorage.getItem("jwt");
-  if (token) {
-    showLogoutButton(true);
-    renderProfile();
-  } else {
-    showLogoutButton(false);
-  }
 }
 
 async function queryGraphQL(query) {
@@ -631,7 +575,7 @@ function drawTimeline(completed, wip) {
     const scrollable = container
       .append("div")
       .style("width", "100%")
-      .style("overflow-x", "auto")
+      .style("overflow-x", "scroll")
       .style("border-radius", "8px");
 
     const svg = scrollable
@@ -951,4 +895,3 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-loadInitialState();
